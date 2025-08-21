@@ -23,7 +23,7 @@ Para compilar e executar este projeto localmente, siga os passos abaixo.
 
 ### Pré-requisitos
 
-- É necessário ter o **Rust** e o **Cargo** instalados em sua máquina. Se não os tiver, você pode instalá-los através do [rustup](https://rustup.rs/).
+- É necessário ter o **Rust** e o **Cargo** instalados em sua máquina. Se não os tiver, você pode instalá-los através do [rustup](https://www.rust-lang.org/pt-BR/tools/install).
 
 ### Passos
 
