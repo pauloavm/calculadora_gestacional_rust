@@ -1,6 +1,6 @@
-# Calculadora de Idade Gestacional do Bebê 👶
+# Calculadora de Idade Gestacional do Bebê
 
-Uma aplicação de desktop simples e eficiente, desenvolvida em Rust, para calcular a idade cronológica e a idade corrigida de bebês, especialmente útil para acompanhar o desenvolvimento de prematuros.
+Uma aplicação de desktop simples e eficiente, desenvolvida em Rust, para calcular a idade cronológica e a idade corrigida de bebês, especialmente útil para acompanhar o desenvolvimento de prematuros até 02 anos de idade.
 
 ![Screenshot da Aplicação](./screenshot.png)
 
