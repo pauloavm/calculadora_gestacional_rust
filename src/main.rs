@@ -1,3 +1,4 @@
+#![windows_subsystem = "windows"]
 use chrono::{Datelike, NaiveDate, Utc};
 use eframe::egui;
 use std::str::FromStr;
