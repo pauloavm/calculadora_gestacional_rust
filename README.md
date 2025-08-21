@@ -6,7 +6,7 @@ Uma aplicação de desktop simples e eficiente, desenvolvida em Rust, para calcu
 
 ---
 
-## ✨ Funcionalidades
+## Funcionalidades
 
 - **Cálculo de Idade Cronológica:** Determina a idade exata do bebê em anos, meses, dias, semanas totais e meses totais.
 - **Cálculo de Idade Corrigida:** Ajusta a idade do bebê com base na prematuridade, considerando uma gestação a termo de 40 semanas.
@@ -17,7 +17,7 @@ Uma aplicação de desktop simples e eficiente, desenvolvida em Rust, para calcu
 
 ---
 
-## 🚀 Como Compilar e Executar
+## Como Compilar e Executar
 
 Para compilar e executar este projeto localmente, siga os passos abaixo.
 
@@ -50,7 +50,7 @@ Para compilar e executar este projeto localmente, siga os passos abaixo.
 
 ---
 
-## 📦 Dependências
+## Dependências
 
 Este projeto utiliza as seguintes bibliotecas (crates):
 
@@ -62,9 +62,9 @@ As dependências são gerenciadas automaticamente pelo Cargo.
 
 ---
 
-## 👤 Autor
+## Autor
 
-Desenvolvido com ❤️ em Rust por **Paulo A. V. Munhoz**.
+Desenvolvido com muito café em Rust por **Paulo A. V. Munhoz**.
 
 [![LinkedIn](https://img.shields.io/badge/linkedin-%230077B5.svg?style=for-the-badge&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/paulomunhoz/)
 
