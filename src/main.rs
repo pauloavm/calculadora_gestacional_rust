@@ -1,10 +1,3 @@
-// NOTA: Para compilar este código, adicione as seguintes dependências ao seu arquivo `Cargo.toml`:
-//
-// [dependencies]
-// chrono = "0.4"
-// eframe = "0.27" # A biblioteca para a interface gráfica (GUI)
-// arboard = "3.4" # Para funcionalidade de copiar para a área de transferência
-
 // --- Importações de Bibliotecas (Crates) ---
 // `chrono` é usado para lidar com datas e durações.
 use chrono::{Datelike, NaiveDate, Utc};
@@ -83,7 +76,10 @@ impl Default for AgeCalculatorApp {
 fn main() -> Result<(), eframe::Error> {
     // Configura as opções da janela nativa (tamanho, etc.).
     let options = eframe::NativeOptions {
-        viewport: egui::ViewportBuilder::default().with_inner_size([440.0, 360.0]), // Define o tamanho inicial da janela.
+        viewport: egui::ViewportBuilder::default()
+            .with_inner_size([440.0, 360.0]) // Define o tamanho inicial da janela.
+            .with_resizable(false), // INÍCIO DA ALTERAÇÃO: Define que a janela não pode ser redimensionada.
+        // FIM DA ALTERAÇÃO
         ..Default::default()
     };
 
