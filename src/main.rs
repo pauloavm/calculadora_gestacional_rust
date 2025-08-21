@@ -1,8 +1,8 @@
 use chrono::{Datelike, NaiveDate, Utc};
 use iced::{
-    Application, Command, Element, Length, Settings, Theme, executor,
+    executor,
     widget::{button, column, container, row, text, text_input},
-    window,
+    window, Alignment, Application, Command, Element, Length, Settings, Theme,
 };
 use std::error::Error;
 
@@ -96,31 +96,22 @@ impl Application for BabyAgeCalculator {
     fn view(&self) -> Element<Self::Message> {
         let title = text("Calculadora de Idade do Bebê")
             .size(24)
-            .style(iced::theme::Text::Color(iced::Color::from_rgb8(0, 0, 255)));
+            .style(iced::Color::from_rgb8(0, 0, 255));
 
         let birthdate_label = text("Data de Nascimento (DD-MM-AAAA):");
-        let birthdate_entry = text_input(
-            "DD-MM-AAAA",
-            &self.birthdate_input,
-            Message::BirthdateChanged,
-        )
-        .width(Length::Fixed(200.0));
+        let birthdate_entry = text_input("DD-MM-AAAA", &self.birthdate_input)
+            .on_input(Message::BirthdateChanged)
+            .width(Length::Fixed(200.0));
 
         let gestational_weeks_label = text("Idade Gestacional (semanas):");
-        let gestational_weeks_entry = text_input(
-            "Semanas",
-            &self.gestational_weeks_input,
-            Message::GestationalWeeksChanged,
-        )
-        .width(Length::Fixed(200.0));
+        let gestational_weeks_entry = text_input("Semanas", &self.gestational_weeks_input)
+            .on_input(Message::GestationalWeeksChanged)
+            .width(Length::Fixed(200.0));
 
         let gestational_days_label = text("Dias na Semana de Nascimento:");
-        let gestational_days_entry = text_input(
-            "Dias",
-            &self.gestational_days_input,
-            Message::GestationalDaysChanged,
-        )
-        .width(Length::Fixed(200.0));
+        let gestational_days_entry = text_input("Dias", &self.gestational_days_input)
+            .on_input(Message::GestationalDaysChanged)
+            .width(Length::Fixed(200.0));
 
         let calculate_button = button(text("Calcular")).on_press(Message::CalculateButtonPressed);
         let clear_button = button(text("Limpar")).on_press(Message::ClearButtonPressed);
@@ -146,7 +137,7 @@ impl Application for BabyAgeCalculator {
             copy_button,
         ]
         .spacing(10)
-        .align_items(iced::Alignment::Center);
+        .align_items(Alignment::Center);
 
         container(content)
             .width(Length::Fill)
@@ -297,10 +288,10 @@ struct CorrectedAge {
 fn main() -> iced::Result {
     BabyAgeCalculator::run(Settings {
         window: window::Settings {
-            size: (450, 450), // Definição do tamanho da janela
+            size: iced::Size::new(450.0, 450.0),
             resizable: false,
             ..Default::default()
         },
-        ..Settings::default()
+        ..Default::default()
     })
 }
