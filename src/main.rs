@@ -1,16 +1,11 @@
+// MUDANÇA: `Application` (o trait) é importado diretamente. `application` não é mais necessário.
 use chrono::{Datelike, NaiveDate, Utc};
 use iced::{
-    executor,
     widget::{button, column, container, row, text, text_input},
     window, Alignment, Application, Command, Element, Length, Settings, Theme,
 };
-use std::error::Error;
 
-// ----------------------------------------------------
-// Mensagens da Aplicação
-// ----------------------------------------------------
-// Este enum representa todas as ações que o usuário pode fazer na interface.
-// É a maneira do iced de lidar com eventos.
+// ... (o enum Message e a struct BabyAgeCalculator continuam iguais)
 #[derive(Debug, Clone)]
 enum Message {
     BirthdateChanged(String),
@@ -21,11 +16,6 @@ enum Message {
     CopyButtonPressed,
 }
 
-// ----------------------------------------------------
-// Estrutura do Estado da Aplicação
-// ----------------------------------------------------
-// Esta struct armazena o estado atual da sua aplicação,
-// como os valores dos campos de entrada e o texto de resultado.
 struct BabyAgeCalculator {
     birthdate_input: String,
     gestational_weeks_input: String,
@@ -36,8 +26,9 @@ struct BabyAgeCalculator {
 // ----------------------------------------------------
 // Implementação da Lógica Principal
 // ----------------------------------------------------
+// MUDANÇA: O trait é apenas `Application`, não `application::Application`
 impl Application for BabyAgeCalculator {
-    type Executor = executor::Default;
+    // O tipo `Executor` foi removido em versões recentes, o que está correto.
     type Message = Message;
     type Theme = Theme;
     type Flags = ();
@@ -58,8 +49,6 @@ impl Application for BabyAgeCalculator {
         String::from("Calculadora de Idade do Bebê")
     }
 
-    // A função `update` é o coração da aplicação.
-    // Ela processa as mensagens (eventos) e atualiza o estado.
     fn update(&mut self, message: Self::Message) -> Command<Self::Message> {
         match message {
             Message::BirthdateChanged(value) => {
@@ -81,22 +70,18 @@ impl Application for BabyAgeCalculator {
                 self.result_text.clear();
             }
             Message::CopyButtonPressed => {
-                // Em iced, a cópia para a área de transferência pode ser um pouco complexa,
-                // pois não há um método direto como em Tkinter.
-                // Usaremos um método simples para mostrar a intenção.
-                // Em uma aplicação real, você usaria uma biblioteca externa como `arboard`.
-                self.result_text = "Resultado copiado!".to_string();
+                if !self.result_text.is_empty() && !self.result_text.starts_with("Por favor") {
+                    // MUDANÇA: O módulo clipboard está em `iced::clipboard`, não `iced::widget::clipboard`
+                    return iced::clipboard::write(self.result_text.clone());
+                }
             }
         }
         Command::none()
     }
 
-    // A função `view` é responsável por construir e renderizar a interface.
-    // Ela descreve como a UI deve se parecer a cada atualização do estado.
+    // A função view() não precisa de mudanças desta vez
     fn view(&self) -> Element<Self::Message> {
-        let title = text("Calculadora de Idade do Bebê")
-            .size(24)
-            .style(iced::Color::from_rgb8(0, 0, 255));
+        let title = text("Calculadora de Idade do Bebê").size(24);
 
         let birthdate_label = text("Data de Nascimento (DD-MM-AAAA):");
         let birthdate_entry = text_input("DD-MM-AAAA", &self.birthdate_input)
@@ -117,10 +102,7 @@ impl Application for BabyAgeCalculator {
         let clear_button = button(text("Limpar")).on_press(Message::ClearButtonPressed);
         let copy_button = button(text("Copiar Resultado")).on_press(Message::CopyButtonPressed);
 
-        let result_label = text(&self.result_text)
-            .size(16)
-            .line_height(1.5)
-            .horizontal_alignment(iced::alignment::Horizontal::Left);
+        let result_label = text(&self.result_text).size(16);
 
         let button_row = row![calculate_button, clear_button].spacing(10);
 
@@ -142,15 +124,13 @@ impl Application for BabyAgeCalculator {
         container(content)
             .width(Length::Fill)
             .height(Length::Fill)
-            .center_x()
-            .center_y()
+            .align_x(iced::alignment::Horizontal::Center)
+            .align_y(iced::alignment::Vertical::Center)
             .into()
     }
 }
 
-// ----------------------------------------------------
-// Lógica de Cálculo (reimplementação do código Python)
-// ----------------------------------------------------
+// ... (o resto do arquivo, incluindo a lógica de cálculo e a função main, continua igual)
 impl BabyAgeCalculator {
     fn calculate_age(&mut self) {
         let birthdate_str = &self.birthdate_input;
@@ -174,7 +154,8 @@ impl BabyAgeCalculator {
                 let today = Utc::now().date_naive();
                 let chronological_age = self.calculate_chronological_age(birthdate, today);
                 let corrected_age = self.calculate_corrected_age(
-                    &chronological_age,
+                    birthdate,
+                    today,
                     gestational_weeks,
                     gestational_days,
                 );
@@ -191,57 +172,55 @@ impl BabyAgeCalculator {
         birthdate: NaiveDate,
         today: NaiveDate,
     ) -> ChronologicalAge {
-        let delta = today.signed_duration_since(birthdate);
-        let total_days = delta.num_days();
+        let mut years = today.year() - birthdate.year();
+        let mut months = today.month() as i32 - birthdate.month() as i32;
+        let mut days = today.day() as i32 - birthdate.day() as i32;
 
-        let age_in_weeks = total_days / 7;
-        let age_in_months = total_days / 30; // Aproximação
+        if days < 0 {
+            months -= 1;
+            let prev_month = today.with_day(1).unwrap() - chrono::Duration::days(1);
+            days += prev_month.day() as i32;
+        }
+        if months < 0 {
+            years -= 1;
+            months += 12;
+        }
+
+        let total_days = today.signed_duration_since(birthdate).num_days();
 
         ChronologicalAge {
-            weeks: age_in_weeks,
-            months: age_in_months,
+            years: years,
+            months: months,
+            days: days,
+            total_days: total_days,
         }
     }
 
     fn calculate_corrected_age(
         &self,
-        chronological_age: &ChronologicalAge,
+        birthdate: NaiveDate,
+        today: NaiveDate,
         gestational_weeks: i32,
         gestational_days: i32,
     ) -> CorrectedAge {
-        let corrected_weeks = chronological_age.weeks - (40 - gestational_weeks as i64);
-        let total_corrected_days = corrected_weeks * 7 + gestational_days as i64;
+        let prematurity_days = (40 * 7) - (gestational_weeks * 7 + gestational_days);
 
-        let final_weeks = total_corrected_days / 7;
-        let final_days_in_week = total_corrected_days % 7;
-        let corrected_months = total_corrected_days / 30;
-
-        // CÁLCULO MAIS PRECISO
-        let today = Utc::now().date_naive();
-        let corrected_birthdate = today - chrono::Duration::days(total_corrected_days);
-
-        let mut corrected_years = today.year() - corrected_birthdate.year();
-        let mut corrected_months_years = today.month() as i32 - corrected_birthdate.month() as i32;
-        let mut corrected_days_years = today.day() as i32 - corrected_birthdate.day() as i32;
-
-        if corrected_days_years < 0 {
-            corrected_months_years -= 1;
-            let last_day_of_prev_month = (today - chrono::Duration::days(today.day() as i64)).day();
-            corrected_days_years += last_day_of_prev_month as i32;
+        if prematurity_days <= 0 {
+            let chronological = self.calculate_chronological_age(birthdate, today);
+            return CorrectedAge {
+                years: chronological.years,
+                months: chronological.months,
+                days: chronological.days,
+            };
         }
 
-        if corrected_months_years < 0 {
-            corrected_years -= 1;
-            corrected_months_years += 12;
-        }
+        let corrected_birthdate = birthdate + chrono::Duration::days(prematurity_days as i64);
+        let corrected_age = self.calculate_chronological_age(corrected_birthdate, today);
 
         CorrectedAge {
-            weeks: final_weeks,
-            months: corrected_months,
-            days: final_days_in_week,
-            years: corrected_years,
-            months_years: corrected_months_years,
-            days_years: corrected_days_years,
+            years: corrected_age.years,
+            months: corrected_age.months,
+            days: corrected_age.days,
         }
     }
 
@@ -251,45 +230,36 @@ impl BabyAgeCalculator {
         corrected_age: &CorrectedAge,
     ) {
         let result = format!(
-            "Idade Cronológica: {} semanas ({} meses)\n\
-            Idade Corrigida: {} semanas ({} meses) e {} dias\n\
-            Idade Corrigida (Anos): {} anos, {} meses e {} dias",
-            chronological_age.weeks,
+            "Idade Cronológica: {} anos, {} meses e {} dias (Total: {} dias)\n\
+             Idade Corrigida: {} anos, {} meses e {} dias",
+            chronological_age.years,
             chronological_age.months,
-            corrected_age.weeks,
-            corrected_age.months,
-            corrected_age.days,
+            chronological_age.days,
+            chronological_age.total_days,
             corrected_age.years,
-            corrected_age.months_years,
-            corrected_age.days_years
+            corrected_age.months,
+            corrected_age.days
         );
         self.result_text = result;
     }
 }
-
-// ----------------------------------------------------
-// Estruturas de Dados para os Resultados
-// ----------------------------------------------------
-// Usamos structs para organizar os resultados de forma clara.
 struct ChronologicalAge {
-    weeks: i64,
-    months: i64,
+    years: i32,
+    months: i32,
+    days: i32,
+    total_days: i64,
 }
 
 struct CorrectedAge {
-    weeks: i64,
-    months: i64,
-    days: i64,
     years: i32,
-    months_years: i32,
-    days_years: i32,
+    months: i32,
+    days: i32,
 }
 
 fn main() -> iced::Result {
     BabyAgeCalculator::run(Settings {
+        size: (450.0, 450.0),
         window: window::Settings {
-            size: iced::Size::new(450.0, 450.0),
-            resizable: false,
             ..Default::default()
         },
         ..Default::default()
