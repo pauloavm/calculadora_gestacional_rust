@@ -186,7 +186,7 @@ impl eframe::App for AgeCalculatorApp {
             // `vertical_centered` garante que o conteúdo dentro dele seja centralizado horizontalmente.
             ui.vertical_centered(|ui| {
                 ui.add_space(10.0);
-                ui.heading("Calculadora de Idade do Bebê");
+                ui.heading("Calculadora de Idade Gestacional do Bebê");
             });
             ui.add_space(15.0);
 
