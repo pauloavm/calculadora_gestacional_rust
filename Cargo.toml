@@ -4,3 +4,9 @@ version = "0.1.0"
 edition = "2024"
 
 [dependencies]
+iced = "0.10"
+chrono = "0.4"
+
+# Apenas para usar iced como uma GUI. Para a sua aplicação, a funcionalidade "futures" também é útil para tarefas assíncronas, mas não será usada neste projeto simples.
+[target.'cfg(target_os = "windows")'.dependencies]
+iced = { version = "0.10", features = ["winrt"] }
