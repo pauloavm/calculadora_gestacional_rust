@@ -49,24 +49,21 @@
                 </Directory>
             </Directory>
             
-            <!-- INÍCIO DA ALTERAÇÃO: Define o diretório do Menu Iniciar -->
             <Directory Id="ProgramMenuFolder">
                 <Directory Id="ApplicationProgramsFolder" Name="Calculadora Gestacional"/>
             </Directory>
-            <!-- FIM DA ALTERAÇÃO -->
+            
+            <Directory Id="DesktopFolder" Name="Desktop" />
 
         </Directory>
 
-        <!-- INÍCIO DA ALTERAÇÃO: Componente que cria os atalhos -->
         <DirectoryRef Id="ApplicationProgramsFolder">
             <Component Id="ApplicationShortcut" Guid="*">
-                <!-- Atalho do Menu Iniciar -->
                 <Shortcut Id="ApplicationStartMenuShortcut"
                     Name="Calculadora Gestacional"
                     Description="Calculadora de Idade Gestacional do Bebê"
                     Target="[#exe0]"
                     WorkingDirectory="APPLICATIONFOLDER"/>
-                <!-- Atalho da Área de Trabalho -->
                 <Shortcut Id="ApplicationDesktopShortcut"
                           Name="Calculadora Gestacional"
                           Description="Calculadora de Idade Gestacional do Bebê"
@@ -76,8 +73,7 @@
                 <RegistryValue Root="HKCU" Key="Software\Paulo A V Munhoz\CalculadoraGestacional" Name="installed" Type="integer" Value="1" KeyPath="yes"/>
             </Component>
         </DirectoryRef>
-        <!-- FIM DA ALTERAÇÃO -->
-
+        
         <Feature
             Id='Binaries'
             Title='Application'
@@ -89,16 +85,34 @@
             Absent='disallow'>
             
             <ComponentRef Id='binary0'/>
-            
-            <!-- INÍCIO DA ALTERAÇÃO: Adiciona o componente do atalho ao instalador -->
             <ComponentRef Id="ApplicationShortcut" />
-            <!-- FIM DA ALTERAÇÃO -->
 
         </Feature>
 
         <SetProperty Id='ARPINSTALLLOCATION' Value='[APPLICATIONFOLDER]' After='CostFinalize'/>
 
-        <UIRef Id='WixUI_Minimal'/>
+        <!-- INÍCIO DAS ALTERAÇÕES: Adicionando Ícone, UI e Tela de Licença -->
+
+        <!-- 1. Ícone do Aplicativo: Aparece em "Adicionar ou Remover Programas" -->
+        <!-- Crie um arquivo .ico, coloque na pasta 'wix' e descomente as duas linhas abaixo -->
+        <!-- <Icon Id="ProductIcon" SourceFile="Product.ico"/> -->
+        <!-- <Property Id="ARPPRODUCTICON" Value="ProductIcon" /> -->
+
+        <!-- 2. Interface do Instalador: Trocamos WixUI_Minimal por WixUI_InstallDir -->
+        <UIRef Id='WixUI_InstallDir'/>
+        
+        <!-- 3. Tela de Licença (EULA): Apresenta um texto antes da instalação -->
+        <!-- Crie um arquivo de texto rico (Eula.rtf) com as informações, coloque na pasta 'wix' e descomente a linha abaixo -->
+        <WixVariable Id="WixUILicenseRtf" Value="Eula.rtf" />
+
+        <!-- 4. (Opcional) Imagens Personalizadas no Instalador -->
+        <!-- Crie as imagens .bmp nos tamanhos corretos, coloque na pasta 'wix' e descomente -->
+        <!-- Banner superior (493x58 pixels) -->
+        <!-- <WixVariable Id="WixUIBannerBmp" Value="Banner.bmp" /> -->
+        <!-- Imagem da primeira tela (493x312 pixels) -->
+        <!-- <WixVariable Id="WixUIDialogBmp" Value="Dialog.bmp" /> -->
+
+        <!-- FIM DAS ALTERAÇÕES -->
 
     </Product>
 </Wix>
