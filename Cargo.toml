@@ -2,13 +2,22 @@
 name = "calculadora_gestacional"
 version = "0.1.0"
 edition = "2021"
-authors = ["Paulo A V Munhoz <pauloavmunhoz@gmail.com>"]
+authors = ["Paulo A V Munhoz <seu-email@exemplo.com>"]
 license = "MIT"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
 chrono = "0.4"
-eframe = "0.27" # A biblioteca para a interface gráfica (GUI)
-arboard = "3.4" # Para funcionalidade de copiar para a área de transferência
+eframe = "0.27"
+arboard = "3.4"
 
 [build-dependencies]
 embed-resource = "2.4"
+
+
+[package.metadata.wix]
+culture = "pt-BR"
+eula = "wix/Eula.rtf"
+locale = "wix/WixUI_pt-BR.wxl"
+
