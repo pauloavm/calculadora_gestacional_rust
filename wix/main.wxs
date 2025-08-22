@@ -93,8 +93,8 @@
 
         <!-- INÍCIO DAS ALTERAÇÕES -->
 
-        <!-- Ícone do Aplicativo: O caminho agora aponta para a pasta 'assets' -->
-        <Icon Id="ProductIcon" SourceFile="../assets/Product.ico"/>
+        <!-- Ícone do Aplicativo: O caminho agora aponta para o arquivo dentro da própria pasta 'wix' -->
+        <Icon Id="ProductIcon" SourceFile="Product.ico"/>
         <Property Id="ARPPRODUCTICON" Value="ProductIcon" />
 
         <!-- Interface do Instalador: WixUI_Minimal para uma instalação direta -->
