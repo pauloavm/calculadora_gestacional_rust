@@ -1,23 +1,43 @@
+# --- Seção de Metadados do Pacote ---
+# Define as informações essenciais sobre o seu projeto (crate).
 [package]
+# O nome do seu projeto. Usado pelo Cargo e pelo crates.io.
 name = "calculadora_gestacional"
+# A versão do seu projeto, seguindo o versionamento semântico.
 version = "0.1.0"
+# A edição do Rust a ser usada. "2021" é a mais recente e recomendada.
 edition = "2021"
+# Os autores do projeto.
 authors = ["Paulo A V Munhoz <seu-email@exemplo.com>"]
+# A licença sob a qual o projeto é distribuído.
 license = "MIT"
 
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+# Para mais chaves e suas definições, consulte a documentação oficial:
+# https://doc.rust-lang.org/cargo/reference/manifest.html
 
+# --- Seção de Dependências ---
+# Lista as bibliotecas (crates) que o seu projeto precisa para ser executado.
 [dependencies]
+# Crate para manipulação de data e hora. Essencial para os cálculos de idade.
 chrono = "0.4"
+# O framework principal para criar a interface gráfica de usuário (GUI).
 eframe = "0.27"
+# Crate para interagir com a área de transferência (clipboard) do sistema operacional.
 arboard = "3.4"
 
+# --- Seção de Dependências de Build ---
+# Lista as crates que são necessárias apenas durante o processo de compilação,
+# mas não fazem parte do executável final.
 [build-dependencies]
+# Usado no script 'build.rs' para embutir o ícone da aplicação no executável do Windows.
 embed-resource = "2.4"
 
-
+# --- Seção de Metadados Específicos para o WiX Toolset ---
+# Esta seção é usada pela extensão 'cargo wix' para gerar o instalador do Windows (.msi).
 [package.metadata.wix]
+# Define a cultura (idioma) do instalador. "pt-BR" para Português do Brasil.
 culture = "pt-BR"
+# Caminho para o arquivo do Contrato de Licença de Usuário Final (EULA) em formato .rtf.
 eula = "wix/Eula.rtf"
+# Caminho para o arquivo de localização do WiX, que traduz a interface do instalador.
 locale = "wix/WixUI_pt-BR.wxl"
-
