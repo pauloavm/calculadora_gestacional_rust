@@ -91,15 +91,13 @@
 
         <SetProperty Id='ARPINSTALLLOCATION' Value='[APPLICATIONFOLDER]' After='CostFinalize'/>
 
-        <!-- INÍCIO DA ALTERAÇÃO: Configurando uma instalação simples -->
+        <!-- INÍCIO DAS ALTERAÇÕES -->
 
-        <!-- 1. Ícone do Aplicativo (Opcional): Aparece em "Adicionar ou Remover Programas" -->
-        <!-- Crie um arquivo Product.ico, coloque na pasta 'wix' e descomente as duas linhas abaixo -->
-        <Icon Id="ProductIcon" SourceFile="Product.ico"/>
+        <!-- Ícone do Aplicativo: O caminho agora aponta para a pasta 'assets' -->
+        <Icon Id="ProductIcon" SourceFile="../assets/Product.ico"/>
         <Property Id="ARPPRODUCTICON" Value="ProductIcon" />
 
-        <!-- 2. Interface do Instalador: WixUI_Minimal para uma instalação direta -->
-        <!-- Esta interface não tem tela de licença nem permite alterar o diretório. -->
+        <!-- Interface do Instalador: WixUI_Minimal para uma instalação direta -->
         <UIRef Id='WixUI_Minimal'/>
 
         <!-- FIM DAS ALTERAÇÕES -->
