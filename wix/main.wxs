@@ -91,26 +91,16 @@
 
         <SetProperty Id='ARPINSTALLLOCATION' Value='[APPLICATIONFOLDER]' After='CostFinalize'/>
 
-        <!-- INÍCIO DAS ALTERAÇÕES: Adicionando Ícone, UI e Tela de Licença -->
+        <!-- INÍCIO DA ALTERAÇÃO: Configurando uma instalação simples -->
 
-        <!-- 1. Ícone do Aplicativo: Aparece em "Adicionar ou Remover Programas" -->
-        <!-- Crie um arquivo .ico, coloque na pasta 'wix' e descomente as duas linhas abaixo -->
+        <!-- 1. Ícone do Aplicativo (Opcional): Aparece em "Adicionar ou Remover Programas" -->
+        <!-- Crie um arquivo Product.ico, coloque na pasta 'wix' e descomente as duas linhas abaixo -->
         <!-- <Icon Id="ProductIcon" SourceFile="Product.ico"/> -->
         <!-- <Property Id="ARPPRODUCTICON" Value="ProductIcon" /> -->
 
-        <!-- 2. Interface do Instalador: Trocamos WixUI_Minimal por WixUI_InstallDir -->
-        <UIRef Id='WixUI_InstallDir'/>
-        
-        <!-- 3. Tela de Licença (EULA): Apresenta um texto antes da instalação -->
-        <!-- Crie um arquivo de texto rico (Eula.rtf) com as informações, coloque na pasta 'wix' e descomente a linha abaixo -->
-        <WixVariable Id="WixUILicenseRtf" Value="Eula.rtf" />
-
-        <!-- 4. (Opcional) Imagens Personalizadas no Instalador -->
-        <!-- Crie as imagens .bmp nos tamanhos corretos, coloque na pasta 'wix' e descomente -->
-        <!-- Banner superior (493x58 pixels) -->
-        <!-- <WixVariable Id="WixUIBannerBmp" Value="Banner.bmp" /> -->
-        <!-- Imagem da primeira tela (493x312 pixels) -->
-        <!-- <WixVariable Id="WixUIDialogBmp" Value="Dialog.bmp" /> -->
+        <!-- 2. Interface do Instalador: WixUI_Minimal para uma instalação direta -->
+        <!-- Esta interface não tem tela de licença nem permite alterar o diretório. -->
+        <UIRef Id='WixUI_Minimal'/>
 
         <!-- FIM DAS ALTERAÇÕES -->
 
