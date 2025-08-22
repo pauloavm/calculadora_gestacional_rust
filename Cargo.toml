@@ -3,6 +3,7 @@ name = "calculadora_gestacional"
 version = "0.1.0"
 edition = "2021"
 authors = ["Paulo A V Munhoz <pauloavmunhoz@gmail.com>"]
+licence = "MIT"
 
 [dependencies]
 chrono = "0.4"
