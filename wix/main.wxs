@@ -1,5 +1,6 @@
 <?xml version='1.0' encoding='windows-1252'?>
-<Wix xmlns='http://schemas.microsoft.com/wix/2006/wi'>
+<Wix xmlns='http://schemas.microsoft.com/wix/2006/wi'
+     xmlns:util='http://schemas.microsoft.com/wix/UtilExtension'>
 
     <?if $(sys.BUILDARCH) = x64 or $(sys.BUILDARCH) = arm64 ?>
         <?define PlatformProgramFilesFolder = "ProgramFiles64Folder" ?>
@@ -9,18 +10,18 @@
 
     <Product
         Id='*'
-        Name='calculadora_gestacional'
+        Name='Calculadora Gestacional'
         UpgradeCode='65F58F8A-2B21-4FB5-89D7-C7A189B21B66'
         Manufacturer='Paulo A V Munhoz'
-        Language='1033'
+        Language='1046'
         Codepage='1252'
         Version='$(var.Version)'>
 
         <Package Id='*'
-            Keywords='Installer'
+            Keywords='Instalador'
             Manufacturer='Paulo A V Munhoz'
             InstallerVersion='450'
-            Languages='1033'
+            Languages='1046'
             Compressed='yes'
             InstallScope='perMachine'
             SummaryCodepage='1252'
@@ -28,14 +29,14 @@
 
         <MajorUpgrade
             Schedule='afterInstallInitialize'
-            DowngradeErrorMessage='A newer version of [ProductName] is already installed. Setup will now exit.'/>
+            DowngradeErrorMessage='Uma versão mais recente de [ProductName] já está instalada.'/>
 
         <Media Id='1' Cabinet='media1.cab' EmbedCab='yes' DiskPrompt='CD-ROM #1'/>
-        <Property Id='DiskPrompt' Value='calculadora_gestacional Installation'/>
+        <Property Id='DiskPrompt' Value='Instalação da Calculadora Gestacional'/>
 
         <Directory Id='TARGETDIR' Name='SourceDir'>
             <Directory Id='$(var.PlatformProgramFilesFolder)' Name='PFiles'>
-                <Directory Id='APPLICATIONFOLDER' Name='calculadora_gestacional'>
+                <Directory Id='APPLICATIONFOLDER' Name='Calculadora Gestacional'>
                     <Directory Id='Bin' Name='bin'>
                         <Component Id='binary0' Guid='*'>
                             <File
@@ -54,7 +55,6 @@
             </Directory>
             
             <Directory Id="DesktopFolder" Name="Desktop" />
-
         </Directory>
 
         <DirectoryRef Id="ApplicationProgramsFolder">
@@ -76,8 +76,8 @@
         
         <Feature
             Id='Binaries'
-            Title='Application'
-            Description='Installs all binaries.'
+            Title='Aplicação Principal'
+            Description='Instala todos os arquivos necessários.'
             Level='1'
             ConfigurableDirectory='APPLICATIONFOLDER'
             AllowAdvertise='no'
@@ -86,21 +86,23 @@
             
             <ComponentRef Id='binary0'/>
             <ComponentRef Id="ApplicationShortcut" />
-
         </Feature>
 
         <SetProperty Id='ARPINSTALLLOCATION' Value='[APPLICATIONFOLDER]' After='CostFinalize'/>
-
-        <!-- INÍCIO DAS ALTERAÇÕES -->
-
-        <!-- Ícone do Aplicativo: O caminho agora aponta para o arquivo dentro da própria pasta 'wix' -->
+        
         <Icon Id="ProductIcon" SourceFile="Product.ico"/>
         <Property Id="ARPPRODUCTICON" Value="ProductIcon" />
 
-        <!-- Interface do Instalador: WixUI_Minimal para uma instalação direta -->
-        <UIRef Id='WixUI_Minimal'/>
-
-        <!-- FIM DAS ALTERAÇÕES -->
+        <!-- INÍCIO DA ALTERAÇÃO FINAL -->
+        <!-- Usamos a UI WixUI_InstallDir que é compatível com a tradução -->
+        <UIRef Id="WixUI_InstallDir" />
+        
+        <!-- Esta propriedade é necessária para a UI WixUI_InstallDir -->
+        <Property Id="WIXUI_INSTALLDIR" Value="APPLICATIONFOLDER" />
+        
+        <!-- Aponta para o arquivo de tradução. O WiX irá encontrá-lo automaticamente na pasta 'wix' -->
+        <WixVariable Id="WixUILicenseRtf" Value="Eula.rtf" /> 
+        <!-- FIM DA ALTERAÇÃO FINAL -->
 
     </Product>
 </Wix>
