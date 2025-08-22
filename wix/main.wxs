@@ -1,110 +1,79 @@
-<?xml version='1.0' encoding='windows-1252'?>
-<Wix xmlns='http://schemas.microsoft.com/wix/2006/wi'
-     xmlns:util='http://schemas.microsoft.com/wix/UtilExtension'>
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+    <!-- Define o produto a ser instalado.
+         Id="*": Gera um novo ProductCode para cada compilação, garantindo que cada build seja único.
+         Name: O nome do produto que será exibido para o usuário.
+         Language="1046": Define o idioma como Português (Brasil).
+         Version: A versão do produto.
+         Manufacturer: O nome do fabricante.
+         UpgradeCode: Um GUID que identifica a família de produtos. Essencial para o processo de atualização. -->
+    <Product Id="*" Name="Calculadora Gestacional do Bebê" Language="1046" Version="1.0.0.0" Manufacturer="Paulo A V Munhoz" UpgradeCode="a216c33c-2646-4c90-953e-5f9922c22880">
+        <!-- Define as propriedades do pacote do instalador.
+             Id="*": Gera um novo PackageCode para cada compilação.
+             Comments: Um breve comentário sobre o pacote.
+             InstallerVersion="200": A versão mínima do Windows Installer necessária.
+             Compressed="yes": Indica que os arquivos do instalador serão comprimidos em um arquivo .cab.
+             InstallScope="perMachine": O software será instalado para todos os usuários da máquina. -->
+        <Package Id="*" Comments="A simple gestational calculator in Rust" InstallerVersion="200" Compressed="yes" InstallScope="perMachine" />
 
-    <?if $(sys.BUILDARCH) = x64 or $(sys.BUILDARCH) = arm64 ?>
-        <?define PlatformProgramFilesFolder = "ProgramFiles64Folder" ?>
-    <?else ?>
-        <?define PlatformProgramFilesFolder = "ProgramFilesFolder" ?>
-    <?endif ?>
+        <!-- Configura a lógica de atualização.
+             Detecta versões anteriores do produto usando o UpgradeCode.
+             Se uma versão anterior for encontrada, ela será desinstalada antes da instalação da nova versão. -->
+        <Upgrade Id="a216c33c-2646-4c90-953e-5f9922c22880">
+            <UpgradeVersion Minimum="1.0.0.0" IncludeMinimum="yes" OnlyDetect="no" Maximum="1.0.0.0" IncludeMaximum="no" Property="PREVIOUSFOUND" />
+        </Upgrade>
+        
+        <!-- Define o arquivo de mídia para o instalador.
+             Id="1": Identificador da mídia.
+             Cabinet="media1.cab": Nome do arquivo .cab que conterá os arquivos do produto.
+             CompressionLevel="high": Define o nível de compressão para o arquivo .cab. -->
+        <Media Id="1" Cabinet="media1.cab" CompressionLevel="high" />
 
-    <Product
-        Id='*'
-        Name='Calculadora Gestacional'
-        UpgradeCode='65F58F8A-2B21-4FB5-89D7-C7A189B21B66'
-        Manufacturer='Paulo A V Munhoz'
-        Language='1046'
-        Codepage='1252'
-        Version='$(var.Version)'>
+        <!-- Referencia a interface de usuário padrão do WiX para seleção de diretório de instalação. -->
+        <UIRef Id="WixUI_InstallDir" />
 
-        <Package Id='*'
-            Keywords='Instalador'
-            Manufacturer='Paulo A V Munhoz'
-            InstallerVersion='450'
-            Languages='1046'
-            Compressed='yes'
-            InstallScope='perMachine'
-            SummaryCodepage='1252'
-            />
+        <!-- Define o caminho para o arquivo de licença (EULA) em formato RTF. -->
+        <WixVariable Id="WixUILicenseRtf" Value="assets\Eula.rtf" />
+        
+        <!-- Define os banners e ícones para a interface do usuário do instalador.
+             WixUIBannerBmp: Banner superior da maioria das caixas de diálogo.
+             WixUIExitDlgLeftBanner: Banner esquerdo na caixa de diálogo de saída. -->
+        <WixVariable Id="WixUIBannerBmp" Value="assets\Product.ico" />
+        <WixVariable Id="WixUIExitDlgLeftBanner" Value="assets\Product.ico" />
 
-        <MajorUpgrade
-            Schedule='afterInstallInitialize'
-            DowngradeErrorMessage='Uma versão mais recente de [ProductName] já está instalada.'/>
-
-        <Media Id='1' Cabinet='media1.cab' EmbedCab='yes' DiskPrompt='CD-ROM #1'/>
-        <Property Id='DiskPrompt' Value='Instalação da Calculadora Gestacional'/>
-
-        <Directory Id='TARGETDIR' Name='SourceDir'>
-            <Directory Id='$(var.PlatformProgramFilesFolder)' Name='PFiles'>
-                <Directory Id='APPLICATIONFOLDER' Name='Calculadora Gestacional'>
-                    <Directory Id='Bin' Name='bin'>
-                        <Component Id='binary0' Guid='*'>
-                            <File
-                                Id='exe0'
-                                Name='calculadora_gestacional.exe'
-                                DiskId='1'
-                                Source='$(var.CargoTargetBinDir)\calculadora_gestacional.exe'
-                                KeyPath='yes'/>
-                        </Component>
+        <!-- Define a estrutura de diretórios para a instalação. -->
+        <Directory Id="TARGETDIR" Name="SourceDir">
+            <!-- Diretório de Arquivos de Programas. -->
+            <Directory Id="ProgramFilesFolder">
+                <!-- Diretório principal da aplicação. -->
+                <Directory Id="APPLICATIONFOLDER" Name="Calculadora Gestacional do Bebê">
                     </Directory>
-                </Directory>
             </Directory>
-            
-            <Directory Id="ProgramMenuFolder">
-                <Directory Id="ApplicationProgramsFolder" Name="Calculadora Gestacional"/>
-            </Directory>
-            
-            <Directory Id="DesktopFolder" Name="Desktop" />
         </Directory>
 
-        <DirectoryRef Id="ApplicationProgramsFolder">
-            <Component Id="ApplicationShortcut" Guid="*">
-                <Shortcut Id="ApplicationStartMenuShortcut"
-                    Name="Calculadora Gestacional"
-                    Description="Calculadora de Idade Gestacional do Bebê"
-                    Target="[#exe0]"
-                    WorkingDirectory="APPLICATIONFOLDER"/>
-                <Shortcut Id="ApplicationDesktopShortcut"
-                          Name="Calculadora Gestacional"
-                          Description="Calculadora de Idade Gestacional do Bebê"
-                          Target="[#exe0]"
-                          Directory="DesktopFolder"/>
-                <RemoveFolder Id="ApplicationProgramsFolder" On="uninstall"/>
-                <RegistryValue Root="HKCU" Key="Software\Paulo A V Munhoz\CalculadoraGestacional" Name="installed" Type="integer" Value="1" KeyPath="yes"/>
+        <!-- Agrupa os componentes que formam o produto. -->
+        <ComponentGroup Id="ProductComponents" Directory="APPLICATIONFOLDER">
+            <!-- Componente principal que contém o executável da aplicação. -->
+            <Component Id="ProductComponent">
+                <Guid>a02c98d6-4e50-482a-a9a2-5b1233d6b043</Guid>
+                <!-- O arquivo executável principal.
+                     Source="$(var.path.binary)": A variável aponta para o caminho do executável compilado.
+                     KeyPath="yes": Marca este arquivo como o arquivo chave do componente, usado para detecção. -->
+                <File Id="ProductExecutable" Name="calculadora_gestacional_rust.exe" Source="$(var.path.binary)" KeyPath="yes" />
             </Component>
-        </DirectoryRef>
-        
-        <Feature
-            Id='Binaries'
-            Title='Aplicação Principal'
-            Description='Instala todos os arquivos necessários.'
-            Level='1'
-            ConfigurableDirectory='APPLICATIONFOLDER'
-            AllowAdvertise='no'
-            Display='expand'
-            Absent='disallow'>
-            
-            <ComponentRef Id='binary0'/>
-            <ComponentRef Id="ApplicationShortcut" />
+
+            <!-- Componente para o Contrato de Licença de Usuário Final (EULA). -->
+            <Component Id="EulaComponent">
+                <Guid>b5745811-37b4-4b52-9b6e-7c5982855f44</Guid>
+                <!-- O arquivo EULA que será incluído no instalador. -->
+                <File Id="EulaFile" Name="Eula.rtf" Source="assets\Eula.rtf" KeyPath="yes" />
+            </Component>
+        </ComponentGroup>
+
+        <!-- Define as funcionalidades (features) do produto a serem instaladas. -->
+        <Feature Id="ProductFeature" Title="Calculadora Gestacional do Bebê" Level="1">
+            <!-- Referencia o grupo de componentes a ser incluído nesta funcionalidade. -->
+            <ComponentGroupRef Id="ProductComponents" />
         </Feature>
-
-        <SetProperty Id='ARPINSTALLLOCATION' Value='[APPLICATIONFOLDER]' After='CostFinalize'/>
-        
-        <Icon Id="ProductIcon" SourceFile="wix\Product.ico"/>
-        <Property Id="ARPPRODUCTICON" Value="ProductIcon" />
-
-        <Property Id="WIXUI_INSTALLDIR" Value="APPLICATIONFOLDER" />
-        
-        <!-- <WixVariable Id="WixUILicenseRtf" Value="wix\Eula.rtf" />  -->
-
-        <!-- INÍCIO DA ALTERAÇÃO FINAL: Define o fluxo de telas da UI -->
-        <UI>
-            <UIRef Id="WixUI_InstallDir" />
-            
-            <!-- Define que o botão "Avançar" da tela de boas-vindas leva para a tela de licença -->
-            <Publish Dialog="WelcomeDlg" Control="Next" Event="NewDialog" Value="LicenseAgreementDlg">1</Publish> 
-        </UI>
-        <!-- FIM DA ALTERAÇÃO FINAL -->
-
     </Product>
 </Wix>
