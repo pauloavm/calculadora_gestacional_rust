@@ -1,0 +1,104 @@
+<?xml version='1.0' encoding='windows-1252'?>
+<Wix xmlns='http://schemas.microsoft.com/wix/2006/wi'>
+
+    <?if $(sys.BUILDARCH) = x64 or $(sys.BUILDARCH) = arm64 ?>
+        <?define PlatformProgramFilesFolder = "ProgramFiles64Folder" ?>
+    <?else ?>
+        <?define PlatformProgramFilesFolder = "ProgramFilesFolder" ?>
+    <?endif ?>
+
+    <Product
+        Id='*'
+        Name='calculadora_gestacional'
+        UpgradeCode='65F58F8A-2B21-4FB5-89D7-C7A189B21B66'
+        Manufacturer='Paulo A V Munhoz'
+        Language='1033'
+        Codepage='1252'
+        Version='$(var.Version)'>
+
+        <Package Id='*'
+            Keywords='Installer'
+            Manufacturer='Paulo A V Munhoz'
+            InstallerVersion='450'
+            Languages='1033'
+            Compressed='yes'
+            InstallScope='perMachine'
+            SummaryCodepage='1252'
+            />
+
+        <MajorUpgrade
+            Schedule='afterInstallInitialize'
+            DowngradeErrorMessage='A newer version of [ProductName] is already installed. Setup will now exit.'/>
+
+        <Media Id='1' Cabinet='media1.cab' EmbedCab='yes' DiskPrompt='CD-ROM #1'/>
+        <Property Id='DiskPrompt' Value='calculadora_gestacional Installation'/>
+
+        <Directory Id='TARGETDIR' Name='SourceDir'>
+            <Directory Id='$(var.PlatformProgramFilesFolder)' Name='PFiles'>
+                <Directory Id='APPLICATIONFOLDER' Name='calculadora_gestacional'>
+                    <Directory Id='Bin' Name='bin'>
+                        <Component Id='binary0' Guid='*'>
+                            <File
+                                Id='exe0'
+                                Name='calculadora_gestacional.exe'
+                                DiskId='1'
+                                Source='$(var.CargoTargetBinDir)\calculadora_gestacional.exe'
+                                KeyPath='yes'/>
+                        </Component>
+                    </Directory>
+                </Directory>
+            </Directory>
+            
+            <!-- INÍCIO DA ALTERAÇÃO: Define o diretório do Menu Iniciar -->
+            <Directory Id="ProgramMenuFolder">
+                <Directory Id="ApplicationProgramsFolder" Name="Calculadora Gestacional"/>
+            </Directory>
+            <!-- FIM DA ALTERAÇÃO -->
+
+        </Directory>
+
+        <!-- INÍCIO DA ALTERAÇÃO: Componente que cria os atalhos -->
+        <DirectoryRef Id="ApplicationProgramsFolder">
+            <Component Id="ApplicationShortcut" Guid="*">
+                <!-- Atalho do Menu Iniciar -->
+                <Shortcut Id="ApplicationStartMenuShortcut"
+                    Name="Calculadora Gestacional"
+                    Description="Calculadora de Idade Gestacional do Bebê"
+                    Target="[#exe0]"
+                    WorkingDirectory="APPLICATIONFOLDER"/>
+                <!-- Atalho da Área de Trabalho -->
+                <Shortcut Id="ApplicationDesktopShortcut"
+                          Name="Calculadora Gestacional"
+                          Description="Calculadora de Idade Gestacional do Bebê"
+                          Target="[#exe0]"
+                          Directory="DesktopFolder"/>
+                <RemoveFolder Id="ApplicationProgramsFolder" On="uninstall"/>
+                <RegistryValue Root="HKCU" Key="Software\Paulo A V Munhoz\CalculadoraGestacional" Name="installed" Type="integer" Value="1" KeyPath="yes"/>
+            </Component>
+        </DirectoryRef>
+        <!-- FIM DA ALTERAÇÃO -->
+
+        <Feature
+            Id='Binaries'
+            Title='Application'
+            Description='Installs all binaries.'
+            Level='1'
+            ConfigurableDirectory='APPLICATIONFOLDER'
+            AllowAdvertise='no'
+            Display='expand'
+            Absent='disallow'>
+            
+            <ComponentRef Id='binary0'/>
+            
+            <!-- INÍCIO DA ALTERAÇÃO: Adiciona o componente do atalho ao instalador -->
+            <ComponentRef Id="ApplicationShortcut" />
+            <!-- FIM DA ALTERAÇÃO -->
+
+        </Feature>
+
+        <SetProperty Id='ARPINSTALLLOCATION' Value='[APPLICATIONFOLDER]' After='CostFinalize'/>
+
+        <UIRef Id='WixUI_Minimal'/>
+
+    </Product>
+</Wix>
