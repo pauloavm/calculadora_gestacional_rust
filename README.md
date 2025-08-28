@@ -62,9 +62,16 @@ As dependências são gerenciadas automaticamente pelo Cargo.
 
 ---
 
-## Autor
+## Apoie este projeto\!
 
-Desenvolvido com muito café em Rust por **Paulo A. V. Munhoz**.
+Se você gostou da iniciativa e acha que o esforço valeu a pena, considere me pagar um café via Pix. Afinal, compartilhar conhecimento dá um trabalhão, né? 🙏
+
+[O cafézinho do PIX](https://nubank.com.br/cobrar/4dtz7/663387e0-56a7-4ce4-9184-1bc4617a075e)
+
+-----
+
+Desenvolvido com muito café, por [Paulo Munhoz](mailto:pauloavmunhoz@gmail.com?subject=Contato%20através%20GitHub) © 2025
 
 [![LinkedIn](https://img.shields.io/badge/linkedin-%230077B5.svg?style=for-the-badge&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/paulomunhoz/)
+
 
